@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket-Match</title>
+    <style>
+        body{
+            text-align: center;
+            background-color: aqua;
+            color: red;
+        }
+
+        .Choice-image{
+            height: 100px; 
+            width: 100px;
+        }
+
+        .button-choice{
+            margin: 10px;
+            border: 3px solid green;
+
+        }
+    </style>
+</head>
+<body>
+    <h1>The Match is ON!</h1>
+
+    <button  class="button-choice" onclick="
+    let computerChoice=Generate_Computer_Choice();
+    let resultMsg=getResult('Bat', computerChoice);
+    showResult('Bat',computerChoice,resultMsg);
+    "><img src="Bat.jpg" alt="Bat" class="Choice-image"></button>
+    
+    <button class="button-choice" onclick="
+    let computerChoice=Generate_Computer_Choice();
+    let resultMsg=getResult('Ball', computerChoice);
+    showResult('Ball',computerChoice,resultMsg);
+    "><img src="Ball.jpg" alt="Ball" class="Choice-image"></button>
+
+    <button class="button-choice" onclick="
+    let computerChoice=Generate_Computer_Choice();
+    let resultMsg=getResult('Stump', computerChoice);
+    showResult('Stump',computerChoice,resultMsg);
+    "><img src="Stump.png" alt="Stump" class="Choice-image"></button>
+
+    <h3 id="user-move"></h3>
+    <h3 id="computer-move"></h3>
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+
+    <button onclick="
+    localStorage.clear()
+    resetScore();
+    ">Reset</button>
+
+    <script>
+        let scoreStr=localStorage.getItem('Score');
+        let score;
+        resetScore(scoreStr);
+        function resetScore(scoreStr){
+            score=scoreStr ? JSON.parse(scoreStr): {
+                win:0,
+                loss:0,
+                tie:0,
+            };
+            score.displayScore=function(){
+            return ` Won:${score.win}, Lost:${score.loss}, Tie:${score.tie}`;
+            };
+            showResult();
+        }
+
+        function Generate_Computer_Choice(){
+            let randomNo=Math.random()*3;
+
+            if (randomNo>0 && randomNo<=1){
+                return 'Bat';
+                
+            }else if (randomNo >1 && randomNo<=2){
+                return 'Ball';
+                
+
+            }else{
+                return 'Stump';
+                
+                    
+            }
+        }
+
+        function getResult(usermove, computermove){
+            if(usermove==='Bat'){
+                if(computermove==='Ball'){
+                    score.win++;
+                    return 'You Won';
+                }else if(computermove==='Bat'){
+                    score.tie++;
+                    return 'Tied';
+                }else{
+                    score.loss++;
+                    return 'You Lost';
+                }
+            }else if( usermove==='Ball'){
+                if(computermove==='Stump'){
+                    score.win++;
+                    return 'You Won';
+                }else if(computermove==='Ball'){
+                    score.tie++;
+                    return 'Tied';
+                }else{
+                    score.loss++;
+                    return 'You Lost';
+                }
+
+                
+                
+            }else{
+                if(computermove==='Bat'){
+                    score.win++;
+                    return 'You Won';
+                }else if(computermove==='Stump'){
+                    score.tie++;
+                    return 'Tied';
+                }else{
+                    score.loss++;
+                    return 'You Lost';
+                }
+
+            }
+        }
+
+        function showResult(usermove,computermove,result){
+            localStorage.setItem('Score', JSON.stringify(score));
+            document.querySelector('#user-move').innerText=usermove ? ` You have chosen ${usermove}` : '';
+            document.querySelector('#computer-move').innerText=computermove ? ` Computer has chosen ${computermove}` : '';
+            document.querySelector('#result').innerText= result ? ` ${result}` : '';
+            document.querySelector('#score').innerText= score.displayScore() ? `  ${score.displayScore()}`: '';
+        }
+    </script>
+</body>
+</html>
